@@ -115,9 +115,9 @@ jobs:
           name: ${{ startsWith(github.ref, 'refs/tags/v') && format('NexusCat {0}', github.ref_name) || format('NexusCat v{0} build {1}', steps.version.outputs.version, github.run_number) }}
           prerelease: ${{ !startsWith(github.ref, 'refs/tags/v') }}
           files: |
-            artifacts/*.exe
-            artifacts/*.zip
-            artifacts/*.dmg
-            artifacts/*.pkg
+            artifacts/**/*.exe
+            artifacts/**/*.zip
+            artifacts/**/*.dmg
+            artifacts/**/*.pkg
           generate_release_notes: true
           fail_on_unmatched_files: true
