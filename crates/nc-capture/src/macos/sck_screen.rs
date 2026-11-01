@@ -197,8 +197,7 @@ impl SCStreamOutputTrait for ScreenHandler {
             }
             let timestamp_us = crate::unix_time_us();
             if pixel_buffer_capture_disabled() {
-                let Some(frame) =
-                    nv12_pixel_buffer_to_bgra(&pixel_buffer, timestamp_us, self.monitor_id)
+                let Some(frame) = nv12_pixel_buffer_to_bgra(&pixel_buffer, timestamp_us, self.monitor_id)
                 else {
                     return;
                 };
@@ -369,3 +368,4 @@ fn nv12_to_bgra(
     }
     pixels
 }
+

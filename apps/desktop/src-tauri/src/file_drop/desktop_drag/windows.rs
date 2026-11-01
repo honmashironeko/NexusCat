@@ -149,3 +149,4 @@ fn any_visible_drag_image() -> bool {
         unsafe { IsWindowVisible(hwnd).as_bool() }
     })
 }
+

@@ -102,3 +102,4 @@ impl TrustStore {
         self.devices.is_empty()
     }
 }
+

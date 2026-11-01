@@ -101,3 +101,4 @@ impl Drop for RunningGuard {
         self.0.store(false, Ordering::SeqCst);
     }
 }
+

@@ -210,7 +210,8 @@ impl GraphicsCaptureApiHandler for WgcHandler {
         }
         match self.sink.try_send(captured) {
             Ok(()) => {}
-            Err(crossbeam_channel::TrySendError::Full(_)) => {}
+            Err(crossbeam_channel::TrySendError::Full(_)) => {
+            }
             Err(crossbeam_channel::TrySendError::Disconnected(_)) => {
                 capture_control.stop();
             }

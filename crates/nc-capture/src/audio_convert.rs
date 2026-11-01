@@ -149,3 +149,4 @@ fn f32_to_i16(value: f32) -> i16 {
     }
     (value.clamp(-1.0, 1.0) * 32767.0).round() as i16
 }
+

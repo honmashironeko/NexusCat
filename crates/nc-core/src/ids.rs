@@ -110,3 +110,4 @@ impl StreamId {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct FrameId(pub u32);
+

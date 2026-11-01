@@ -146,3 +146,4 @@ pub(crate) fn random_bytes<const N: usize>() -> [u8; N] {
 fn network_error(error: std::io::Error) -> NexusError {
     NexusError::Network(error.to_string())
 }
+

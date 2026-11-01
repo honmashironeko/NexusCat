@@ -646,7 +646,8 @@ pub fn webcodecs_probe_result(
 #[tauri::command(rename_all = "snake_case")]
 pub async fn set_autostart(state: AppStateRef<'_>, enabled: bool) -> Result<(), CommandError> {
     #[cfg(windows)]
-    crate::autostart::set_enabled(enabled).map_err(|error| CommandError::new("platform", error))?;
+    crate::autostart::set_enabled(enabled)
+        .map_err(|error| CommandError::new("platform", error))?;
     #[cfg(not(windows))]
     {
         use tauri_plugin_autostart::ManagerExt;
@@ -679,3 +680,4 @@ fn detect_version(path: &std::path::Path) -> String {
     }
     env!("CARGO_PKG_VERSION").to_string()
 }
+

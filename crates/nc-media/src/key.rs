@@ -44,3 +44,4 @@ impl Drop for MediaKey {
         self.0.zeroize();
     }
 }
+

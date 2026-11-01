@@ -159,3 +159,4 @@ fn numbered_name(name: &str, index: u32) -> String {
         truncate_name(&generated)
     }
 }
+

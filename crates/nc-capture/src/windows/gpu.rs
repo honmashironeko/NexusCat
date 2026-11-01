@@ -273,3 +273,4 @@ impl GpuScaler {
         Ok(output)
     }
 }
+

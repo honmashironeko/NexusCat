@@ -344,3 +344,4 @@ impl AppSettings {
             .unwrap_or(self.target)
     }
 }
+

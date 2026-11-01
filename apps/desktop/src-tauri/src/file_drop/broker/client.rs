@@ -13,7 +13,7 @@ use std::thread;
 use std::time::Duration;
 use windows::core::{PCWSTR, PWSTR};
 use windows::Win32::Foundation::{
-    CloseHandle, LocalFree, ERROR_PIPE_CONNECTED, GENERIC_READ, GENERIC_WRITE, HANDLE, HLOCAL,
+    CloseHandle, ERROR_PIPE_CONNECTED, GENERIC_READ, GENERIC_WRITE, HANDLE, HLOCAL, LocalFree,
 };
 use windows::Win32::Security::Authorization::{
     ConvertStringSidToSidW, SetEntriesInAclW, EXPLICIT_ACCESS_W, GRANT_ACCESS, TRUSTEE_IS_SID,
@@ -87,6 +87,7 @@ pub(crate) fn show(x: i32, y: i32, width: i32, height: i32) -> bool {
         .is_ok();
     if !sent {
         client.ready.store(false, Ordering::SeqCst);
+        tracing::warn!("文件拖放代理命令通道已关闭，覆盖请求未能发出");
     }
     sent
 }
@@ -227,7 +228,9 @@ fn accept_loop(
 
     let mut writer = server;
     while let Ok(command) = commands.recv() {
-        if proto::write_frame(&mut writer, &command).is_err() {
+        tracing::info!(?command, "向文件拖放代理写入命令");
+        if let Err(error) = proto::write_frame(&mut writer, &command) {
+            tracing::warn!(%error, "写入文件拖放代理命令失败");
             break;
         }
     }
@@ -269,30 +272,45 @@ fn handshake(server: &File, token: &str, expected_pid: u32) -> Result<(), String
     .map_err(|error| error.to_string())
 }
 
-fn reader_loop(mut file: File, state: Arc<AppState>, ready: Arc<AtomicBool>) {
-    loop {
-        match proto::read_frame::<_, WireEvent>(&mut file) {
-            Ok(event) => {
-                if state
-                    .events
-                    .send(AppEvent::FileDropBroker(convert(event)))
-                    .is_err()
-                {
-                    break;
-                }
+fn reader_loop(file: File, state: Arc<AppState>, ready: Arc<AtomicBool>) {
+    let mut frames = proto::FrameReader::default();
+    'read: loop {
+        match proto::read_available(&file) {
+            Ok(Some(bytes)) => frames.push(&bytes),
+            Ok(None) => {
+                thread::sleep(proto::POLL_INTERVAL);
+                continue;
             }
-            Err(_) => {
-                ready.store(false, Ordering::SeqCst);
-                let _ = state
-                    .events
-                    .send(AppEvent::FileDropBroker(BrokerEvent::Disconnected {
-                        reason: "文件拖放代理连接已断开".into(),
-                    }));
+            Err(error) => {
+                tracing::warn!(%error, "读取文件拖放代理事件失败");
                 break;
+            }
+        }
+        loop {
+            match frames.next::<WireEvent>() {
+                Ok(Some(event)) => {
+                    if state
+                        .events
+                        .send(AppEvent::FileDropBroker(convert(event)))
+                        .is_err()
+                    {
+                        break 'read;
+                    }
+                }
+                Ok(None) => break,
+                Err(error) => {
+                    tracing::warn!(%error, "解析文件拖放代理事件失败");
+                    break 'read;
+                }
             }
         }
     }
     ready.store(false, Ordering::SeqCst);
+    let _ = state
+        .events
+        .send(AppEvent::FileDropBroker(BrokerEvent::Disconnected {
+            reason: "文件拖放代理连接已断开".into(),
+        }));
 }
 
 fn convert(event: WireEvent) -> BrokerEvent {

@@ -99,6 +99,7 @@ fn run_inner(pipe_name: &str, token: &str) -> Result<(), String> {
         }
         return Err(format!("注册拖放目标失败：{error}"));
     }
+    tracing::info!("拖放代理已注册 OLE 落点");
 
     let commands: Arc<parking_lot::Mutex<VecDeque<Command>>> =
         Arc::new(parking_lot::Mutex::new(VecDeque::new()));
@@ -157,22 +158,55 @@ fn event_writer(mut channel: File, events: mpsc::Receiver<Event>) {
 }
 
 fn command_reader(
-    mut channel: File,
+    channel: File,
     commands: Arc<parking_lot::Mutex<VecDeque<Command>>>,
     ui_thread: u32,
 ) {
+    tracing::info!("文件拖放代理命令线程已启动");
+    let mut frames = proto::FrameReader::default();
     loop {
-        let command = match proto::read_frame::<_, Command>(&mut channel) {
-            Ok(command) => command,
-            Err(_) => Command::Shutdown,
-        };
-        let shutdown = matches!(command, Command::Shutdown);
-        commands.lock().push_back(command);
-        if unsafe { PostThreadMessageW(ui_thread, WM_APP_COMMAND, WPARAM(0), LPARAM(0)) }.is_err() {
-            break;
+        match proto::read_available(&channel) {
+            Ok(Some(bytes)) => frames.push(&bytes),
+            Ok(None) => {
+                thread::sleep(proto::POLL_INTERVAL);
+                continue;
+            }
+            Err(error) => {
+                tracing::warn!(%error, "读取文件拖放代理命令失败");
+                let _ = post_command(&commands, ui_thread, Command::Shutdown);
+                return;
+            }
         }
-        if shutdown {
-            break;
+        loop {
+            let command = match frames.next::<Command>() {
+                Ok(Some(command)) => command,
+                Ok(None) => break,
+                Err(error) => {
+                    tracing::warn!(%error, "解析文件拖放代理命令失败");
+                    let _ = post_command(&commands, ui_thread, Command::Shutdown);
+                    return;
+                }
+            };
+            tracing::info!(?command, "文件拖放代理收到命令");
+            let shutdown = matches!(command, Command::Shutdown);
+            if !post_command(&commands, ui_thread, command) || shutdown {
+                return;
+            }
+        }
+    }
+}
+
+fn post_command(
+    commands: &parking_lot::Mutex<VecDeque<Command>>,
+    ui_thread: u32,
+    command: Command,
+) -> bool {
+    commands.lock().push_back(command);
+    match unsafe { PostThreadMessageW(ui_thread, WM_APP_COMMAND, WPARAM(0), LPARAM(0)) } {
+        Ok(()) => true,
+        Err(error) => {
+            tracing::warn!(%error, "向文件拖放代理窗口线程投递命令失败");
+            false
         }
     }
 }
@@ -185,6 +219,7 @@ fn message_loop(hwnd: HWND, commands: &parking_lot::Mutex<VecDeque<Command>>) {
             break;
         }
         if message.message == WM_APP_COMMAND {
+            tracing::info!("文件拖放代理处理命令消息");
             if !drain_commands(hwnd, commands) {
                 break;
             }
@@ -220,8 +255,9 @@ fn drain_commands(hwnd: HWND, commands: &parking_lot::Mutex<VecDeque<Command>>) 
                         SWP_NOACTIVATE | SWP_SHOWWINDOW,
                     )
                 };
-                if let Err(error) = result {
-                    tracing::warn!(%error, "定位文件拖放代理窗口失败");
+                match result {
+                    Ok(()) => tracing::info!(x, y, width, height, "拖放代理窗口已定位"),
+                    Err(error) => tracing::warn!(%error, "定位文件拖放代理窗口失败"),
                 }
             }
             Command::Hide => {
@@ -328,8 +364,10 @@ impl IDropTarget_Impl for BrokerDropTarget_Impl {
         self.accepted.set(true);
         self.effect.set(DROPEFFECT_COPY);
         let (x, y) = self.point(point);
+        let count = paths.len().min(proto::MAX_DROP_PATHS);
+        tracing::info!(files = count, x, y, "拖放代理收到拖动进入");
         let _ = self.events.send(Event::Enter {
-            count: paths.len().min(proto::MAX_DROP_PATHS) as u32,
+            count: count as u32,
             x,
             y,
         });
@@ -353,6 +391,7 @@ impl IDropTarget_Impl for BrokerDropTarget_Impl {
 
     fn DragLeave(&self) -> windows::core::Result<()> {
         if self.accepted.replace(false) {
+            tracing::debug!("拖放代理收到拖动离开");
             let _ = self.events.send(Event::Leave);
         }
         Ok(())
@@ -372,6 +411,7 @@ impl IDropTarget_Impl for BrokerDropTarget_Impl {
                 .as_ref()
                 .and_then(|data_object| unsafe { read_paths(data_object) })
                 .unwrap_or_default();
+            tracing::info!(files = paths.len(), x, y, "拖放代理收到落点");
             if !paths.is_empty() {
                 let _ = self.events.send(Event::Drop { paths, x, y });
             }

@@ -37,11 +37,9 @@ impl TrayHandle {
             .settings_item
             .set_text(text(language, "设置…", "Settings…"));
         let _ = self.mode_menu.set_text(text(language, "模式", "Mode"));
-        let _ = self.kvm_item.set_text(text(
-            language,
-            "多屏流转（软 KVM）",
-            "Multi-screen flow (KVM)",
-        ));
+        let _ = self
+            .kvm_item
+            .set_text(text(language, "多屏流转（软 KVM）", "Multi-screen flow (KVM)"));
         let _ = self.aggregation_item.set_text(text(
             language,
             "单屏聚合（全屏）",
@@ -51,9 +49,11 @@ impl TrayHandle {
         let _ = self
             .aggregation_item
             .set_checked(snapshot.mode == Mode::Aggregation);
-        let _ = self
-            .edge_item
-            .set_text(text(language, "边缘触发", "Edge takeover"));
+        let _ = self.edge_item.set_text(text(
+            language,
+            "边缘触发",
+            "Edge takeover",
+        ));
         let _ = self.edge_item.set_checked(settings.edge_enabled);
         let stage_label = if snapshot.stage_visible {
             text(language, "退出全屏", "Exit fullscreen")
@@ -97,8 +97,20 @@ pub fn create_tray(
         false,
         None::<&str>,
     )?;
-    let mode_menu = Submenu::with_items(app, "模式", true, &[&kvm_item, &aggregation_item])?;
-    let edge_item = CheckMenuItem::with_id(app, "edge", "边缘触发", true, true, None::<&str>)?;
+    let mode_menu = Submenu::with_items(
+        app,
+        "模式",
+        true,
+        &[&kvm_item, &aggregation_item],
+    )?;
+    let edge_item = CheckMenuItem::with_id(
+        app,
+        "edge",
+        "边缘触发",
+        true,
+        true,
+        None::<&str>,
+    )?;
     let stage_item = MenuItem::with_id(app, "stage", "进入全屏", false, None::<&str>)?;
     let quit_item = MenuItem::with_id(app, "quit", "退出 NexusCat", true, None::<&str>)?;
     let separator_one = PredefinedMenuItem::separator(app)?;
@@ -211,3 +223,4 @@ fn status_text(snapshot: &SessionSnapshot, unread: usize, language: Language) ->
     }
     text
 }
+

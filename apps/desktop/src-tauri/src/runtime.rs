@@ -28,7 +28,7 @@ use nc_update::{UpdateManager, UpdateManifest, UpdateReceiver};
 use parking_lot::{Mutex, RwLock};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::net::SocketAddr;
-use std::sync::atomic::{AtomicBool, AtomicU64, AtomicU8, Ordering};
+use std::sync::atomic::{AtomicBool, AtomicU8, AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 use tauri::AppHandle;
@@ -358,7 +358,11 @@ impl InputRuntime {
         }
     }
 
-    fn install_capture_part(&mut self, part: InputCapturePart, events: UnboundedSender<AppEvent>) {
+    fn install_capture_part(
+        &mut self,
+        part: InputCapturePart,
+        events: UnboundedSender<AppEvent>,
+    ) {
         if let Some(mut previous) = self.capture.take() {
             previous.stop();
         }
@@ -1195,6 +1199,7 @@ impl VideoCapabilities {
         let (max_width, max_height, max_fps) = self.limits();
         target.clamped_to(max_width, max_height, max_fps)
     }
+
 }
 
 #[derive(Debug, Clone, Default)]
@@ -1331,9 +1336,7 @@ pub enum AppEvent {
         attempt: u32,
         max: u32,
     },
-    TransferTick {
-        id: u64,
-    },
+    TransferTick { id: u64 },
     FileDropHint,
     EdgeTick,
     ClipboardTick,
@@ -1544,3 +1547,4 @@ impl AppState {
         views
     }
 }
+

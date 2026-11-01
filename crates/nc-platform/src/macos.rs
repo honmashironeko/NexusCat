@@ -171,8 +171,8 @@ fn monitor_info(display: u32, main_display: u32) -> Result<MonitorInfo> {
 
     let pixel_width = unsafe { CGDisplayPixelsWide(display) };
     let pixel_height = unsafe { CGDisplayPixelsHigh(display) };
-    let (pixel_width, pixel_height) =
-        display_mode_pixel_size(display).unwrap_or((pixel_width, pixel_height));
+    let (pixel_width, pixel_height) = display_mode_pixel_size(display)
+        .unwrap_or((pixel_width, pixel_height));
     let is_main = unsafe { CGDisplayIsMain(display) } != 0;
     let rotation_degrees = normalize_rotation(unsafe { CGDisplayRotation(display) });
 

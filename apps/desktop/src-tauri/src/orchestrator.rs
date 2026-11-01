@@ -258,7 +258,9 @@ async fn handle_event(state: &Arc<AppState>, event: AppEvent) {
                 (present_ms.max(0.0) * 1000.0) as u64,
                 dropped_frames,
             );
-            state.metrics.record_presented_frames(presented_frames);
+            state
+                .metrics
+                .record_presented_frames(presented_frames);
             let now_ms = crate::notifications::now_ms();
             let clock_offset_us = state
                 .session_peer_id()
@@ -269,9 +271,10 @@ async fn handle_event(state: &Arc<AppState>, event: AppEvent) {
                 None => {
                     static REJECTED: AtomicU64 = AtomicU64::new(0);
                     if REJECTED.fetch_add(1, Ordering::Relaxed) % 10 == 0 {
-                        let raw_delta_ms = now_ms as i64 - (timestamp_us / 1000) as i64;
-                        let corrected_delta_ms =
-                            now_ms as i64 - ((timestamp_us as i64 + clock_offset_us) / 1000);
+                        let raw_delta_ms =
+                            now_ms as i64 - (timestamp_us / 1000) as i64;
+                        let corrected_delta_ms = now_ms as i64
+                            - ((timestamp_us as i64 + clock_offset_us) / 1000);
                         tracing::info!(
                             now_ms,
                             timestamp_us,
@@ -514,7 +517,10 @@ struct StageMonitor {
     size: tauri::PhysicalSize<u32>,
 }
 
-fn stage_monitor_position(state: &AppState, window: &tauri::WebviewWindow) -> Option<StageMonitor> {
+fn stage_monitor_position(
+    state: &AppState,
+    window: &tauri::WebviewWindow,
+) -> Option<StageMonitor> {
     if state.settings.read().stage_on_primary {
         let monitor = window.primary_monitor().ok().flatten()?;
         let position = monitor.position();
@@ -556,7 +562,10 @@ fn stage_entry_monitor_position(state: &AppState) -> Option<StageMonitor> {
     let monitors = state.monitors.read();
     let monitor = monitor_for_local_node(&node, &monitors)?;
     Some(StageMonitor {
-        position: tauri::PhysicalPosition::new(monitor.bounds.x as f64, monitor.bounds.y as f64),
+        position: tauri::PhysicalPosition::new(
+            monitor.bounds.x as f64,
+            monitor.bounds.y as f64,
+        ),
         size: tauri::PhysicalSize::new(monitor.bounds.width, monitor.bounds.height),
     })
 }
@@ -1964,8 +1973,8 @@ fn ensure_target_accessibility(state: &AppState) {
         return;
     }
     tracing::warn!("缺少辅助功能授权：远端键鼠注入与本机输入捕获不可用");
-    let granted =
-        nc_platform::request_permission(nc_core::PermissionKind::Accessibility).unwrap_or(false);
+    let granted = nc_platform::request_permission(nc_core::PermissionKind::Accessibility)
+        .unwrap_or(false);
     if granted {
         return;
     }
@@ -2797,9 +2806,12 @@ fn start_session_media(
         tracing::warn!(%device, "会话缺少媒体密钥");
         return;
     };
-    state
-        .media
-        .start_receiver(connection_id, media_key, session_id, state.events.clone());
+    state.media.start_receiver(
+        connection_id,
+        media_key,
+        session_id,
+        state.events.clone(),
+    );
     if let Some(peer_addr) = peer_media_address(state, peer) {
         state.media.start_sender(peer_addr, media_key, session_id);
     }
@@ -3294,7 +3306,8 @@ fn captured_shortcut_action(state: &AppState, event: &InputEvent) -> Option<(UiA
     crate::shortcuts::local_shortcuts(&settings.shortcuts)
         .into_iter()
         .find(|shortcut| {
-            shortcut.key_code == *key_code && (modifiers.0 & MODIFIER_MASK) == shortcut.modifiers.0
+            shortcut.key_code == *key_code
+                && (modifiers.0 & MODIFIER_MASK) == shortcut.modifiers.0
         })
         .map(|shortcut| (shortcut.action, shortcut.key_code))
 }
@@ -3678,11 +3691,7 @@ async fn track_local_display_node(state: &Arc<AppState>) {
     if state.snapshot().current_display_node.as_ref() == Some(&node_id) {
         return;
     }
-    dispatch_session(
-        state,
-        SessionEvent::LocalDisplayNodeChanged { node: node_id },
-    )
-    .await;
+    dispatch_session(state, SessionEvent::LocalDisplayNodeChanged { node: node_id }).await;
 }
 
 async fn track_remote_display_node(state: &Arc<AppState>, x: i32, y: i32) {
@@ -3704,11 +3713,7 @@ async fn track_remote_display_node(state: &Arc<AppState>, x: i32, y: i32) {
     if state.snapshot().current_display_node.as_ref() == Some(&node_id) {
         return;
     }
-    dispatch_session(
-        state,
-        SessionEvent::RemoteDisplayNodeChanged { node: node_id },
-    )
-    .await;
+    dispatch_session(state, SessionEvent::RemoteDisplayNodeChanged { node: node_id }).await;
 }
 
 async fn check_edge_crossing_tick(state: &Arc<AppState>) {
@@ -4935,11 +4940,7 @@ fn warp_local_cursor_inside(
                 .node(node_id)
                 .filter(|node| node.is_local && layout.is_active(&node.id))
         })
-        .or_else(|| {
-            mapped
-                .as_ref()
-                .and_then(|(node_id, _)| layout.node(node_id))
-        })
+        .or_else(|| mapped.as_ref().and_then(|(node_id, _)| layout.node(node_id)))
         .or_else(|| {
             layout.nodes.iter().find(|node| {
                 node.device_id == local
@@ -4949,10 +4950,9 @@ fn warp_local_cursor_inside(
             })
         })
         .or_else(|| {
-            layout
-                .nodes
-                .iter()
-                .find(|node| node.device_id == local && node.is_local && layout.is_active(&node.id))
+            layout.nodes.iter().find(|node| {
+                node.device_id == local && node.is_local && layout.is_active(&node.id)
+            })
         })
         .cloned();
     let node = node?;
@@ -5003,8 +5003,12 @@ fn warp_along_fraction(
     let (width, height) = bounds?;
     let (x, y) = cursor?;
     match edge {
-        Direction::Left | Direction::Right => (height > 0.0).then(|| (y / height).clamp(0.0, 1.0)),
-        Direction::Up | Direction::Down => (width > 0.0).then(|| (x / width).clamp(0.0, 1.0)),
+        Direction::Left | Direction::Right => {
+            (height > 0.0).then(|| (y / height).clamp(0.0, 1.0))
+        }
+        Direction::Up | Direction::Down => {
+            (width > 0.0).then(|| (x / width).clamp(0.0, 1.0))
+        }
     }
 }
 
@@ -5074,6 +5078,7 @@ fn handle_file_drop_broker_event(state: &Arc<AppState>, event: BrokerEvent) {
         }
         BrokerEvent::Drop { paths, x, y } => {
             let node_id = crate::file_drop::resolve_drop_node(state, x, y);
+            tracing::info!(node = ?node_id, files = paths.len(), x, y, "拖放代理落点");
             crate::file_drop::hide(state);
             if !state.settings.read().file_transfer_enabled || paths.is_empty() {
                 return;
@@ -5678,10 +5683,7 @@ async fn check_input_watchdog(state: &Arc<AppState>) {
         let input = state.input.lock();
         (
             input.controlling_remote,
-            input
-                .capture
-                .as_ref()
-                .is_some_and(|capture| capture.is_running()),
+            input.capture.as_ref().is_some_and(|capture| capture.is_running()),
         )
     };
     if should_watchdog_release(controlling_remote, &snapshot.input_owner, capture_running) {
@@ -5820,14 +5822,7 @@ fn merge_remote_topology(state: &Arc<AppState>, nodes: Vec<DisplayNode>, source:
     let language = state.language();
     let stored = {
         let mut layout = state.layout.write();
-        if !merge_remote_nodes(
-            &mut layout,
-            local_id,
-            source,
-            peer.as_ref(),
-            language,
-            nodes,
-        ) {
+        if !merge_remote_nodes(&mut layout, local_id, source, peer.as_ref(), language, nodes) {
             return;
         }
         layout.revision = layout.revision.saturating_add(1);
@@ -6350,11 +6345,9 @@ fn show_native_notification(state: &AppState, notification: &AppNotification) {
     if let Some(action) = &notification.action {
         let action_type_id = format!("nexuscat.notification.{}", notification.id);
         let action_type = ActionType::builder(&action_type_id)
-            .actions(vec![Action::builder(
-                action.kind.action_id(),
-                action.label.clone(),
-            )
-            .build()])
+            .actions(vec![
+                Action::builder(action.kind.action_id(), action.label.clone()).build(),
+            ])
             .build();
         if state
             .app
@@ -7474,7 +7467,10 @@ fn set_update_peer_status(
 ) {
     let mut update = state.update.lock();
     let language = state.language();
-    let already_final = matches!(update.status.state, UpdateState::Done | UpdateState::Failed);
+    let already_final = matches!(
+        update.status.state,
+        UpdateState::Done | UpdateState::Failed
+    );
     let mut finished = None;
     if let Some(push) = update.push.as_mut() {
         if let Some(peer) = push
@@ -8311,8 +8307,8 @@ async fn switch_session_target(state: &Arc<AppState>, target: DeviceId) {
     if state.input.lock().controlling_remote {
         send_control(state, ControlMessage::ReleaseAll);
     }
-    let keep_stage_input =
-        state.snapshot().stage_visible && state.snapshot().mode == Mode::Aggregation;
+    let keep_stage_input = state.snapshot().stage_visible
+        && state.snapshot().mode == Mode::Aggregation;
     *state.session_role.write() = Some(SessionRole::Host);
     if let Some(previous) = previous {
         send_control_to(state, previous, ControlMessage::SessionClose);
@@ -8879,3 +8875,4 @@ pub async fn shutdown(state: &Arc<AppState>) {
         stream.stop_blocking();
     }
 }
+

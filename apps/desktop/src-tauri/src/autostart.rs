@@ -3,6 +3,9 @@ use std::os::windows::process::CommandExt;
 use std::path::{Path, PathBuf};
 use std::process::{Command, Output};
 
+const UNSUPPORTED_LOCATION: &str =
+    "便携版位于用户可写目录，无法安全创建管理员登录自启；请使用安装版（Program Files），或在设置中关闭开机自启";
+
 const CREATE_NO_WINDOW: u32 = 0x0800_0000;
 const AUTOSTART_ARG: &str = "--autostart";
 
@@ -12,14 +15,26 @@ fn task_name() -> String {
         .unwrap_or_else(|| "NexusCatAutostart".to_string())
 }
 
+pub fn supported() -> bool {
+    std::env::current_exe().is_ok_and(|exe| is_protected_path(&exe))
+}
+
+pub fn remove_unsafe_task() -> Result<(), String> {
+    let name = task_name();
+    let Some(command) = task_command(&name)? else {
+        return Ok(());
+    };
+    if command_points_to_protected_path(&command) {
+        return Ok(());
+    }
+    tracing::warn!(%command, "删除指向用户可写路径的登录自启任务");
+    delete_task()
+}
+
 pub fn sync_startup(enabled: bool) -> Result<(), String> {
     if enabled {
-        let name = task_name();
-        if task_exists(&name)? {
-            Ok(())
-        } else {
-            create_task(&name)
-        }
+        ensure_supported()?;
+        create_task(&task_name())
     } else {
         delete_task()
     }
@@ -27,10 +42,82 @@ pub fn sync_startup(enabled: bool) -> Result<(), String> {
 
 pub fn set_enabled(enabled: bool) -> Result<(), String> {
     if enabled {
+        ensure_supported()?;
         create_task(&task_name())
     } else {
         delete_task()
     }
+}
+
+fn ensure_supported() -> Result<(), String> {
+    if supported() {
+        Ok(())
+    } else {
+        Err(UNSUPPORTED_LOCATION.into())
+    }
+}
+
+fn is_protected_path(exe: &Path) -> bool {
+    protected_bases().any(|base| path_within(exe, &base))
+}
+
+fn command_points_to_protected_path(command: &str) -> bool {
+    let path = Path::new(command);
+    protected_bases().any(|base| path_within(path, &base))
+}
+
+fn protected_bases() -> impl Iterator<Item = PathBuf> {
+    ["ProgramFiles", "ProgramFiles(x86)", "ProgramW6432"]
+        .iter()
+        .filter_map(std::env::var_os)
+        .map(PathBuf::from)
+}
+
+fn task_command(name: &str) -> Result<Option<String>, String> {
+    let output = schtasks()
+        .arg("/Query")
+        .arg("/TN")
+        .arg(name)
+        .arg("/XML")
+        .output()
+        .map_err(|error| format!("查询登录自启计划任务失败：{error}"))?;
+    if !output.status.success() {
+        return Ok(None);
+    }
+    Ok(extract_command(&decode_output(&output.stdout)))
+}
+
+fn decode_output(bytes: &[u8]) -> String {
+    if bytes.starts_with(&[0xFF, 0xFE]) {
+        let units: Vec<u16> = bytes[2..]
+            .chunks_exact(2)
+            .map(|pair| u16::from_le_bytes([pair[0], pair[1]]))
+            .collect();
+        String::from_utf16_lossy(&units)
+    } else {
+        String::from_utf8_lossy(bytes).into_owned()
+    }
+}
+
+fn extract_command(xml: &str) -> Option<String> {
+    let start = xml.find("<Command>")? + "<Command>".len();
+    let end = xml[start..].find("</Command>")? + start;
+    Some(xml[start..end].trim().to_string())
+}
+
+fn path_within(exe: &Path, base: &Path) -> bool {
+    let exe = normalize_path(exe);
+    let base = normalize_path(base);
+    let prefix = if base.ends_with('\\') {
+        base
+    } else {
+        format!("{base}\\")
+    };
+    exe.starts_with(&prefix)
+}
+
+fn normalize_path(path: &Path) -> String {
+    path.to_string_lossy().replace('/', "\\").to_lowercase()
 }
 
 fn task_exists(name: &str) -> Result<bool, String> {
@@ -230,3 +317,4 @@ fn xml_escape(text: &str) -> String {
     }
     escaped
 }
+

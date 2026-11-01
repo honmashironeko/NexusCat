@@ -249,3 +249,4 @@ fn union_bounds(monitors: &[MonitorInfo]) -> Option<RectI> {
         height: u32::try_from(bottom - top).ok()?,
     })
 }
+

@@ -692,3 +692,4 @@ pub fn pairing_rejected_busy(language: Language, device: &str) -> (String, Strin
         },
     )
 }
+

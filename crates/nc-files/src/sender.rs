@@ -138,3 +138,4 @@ fn hash_and_rewind(file: &mut File) -> Result<(u64, [u8; 32])> {
     file.seek(SeekFrom::Start(0))?;
     Ok((total, hasher.finalize().into()))
 }
+

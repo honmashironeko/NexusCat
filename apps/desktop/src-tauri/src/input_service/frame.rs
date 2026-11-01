@@ -51,3 +51,4 @@ pub fn read_frame<R: Read, T: DeserializeOwned>(reader: &mut R) -> io::Result<T>
     serde_json::from_slice(&payload)
         .map_err(|error| io::Error::new(io::ErrorKind::InvalidData, error))
 }
+

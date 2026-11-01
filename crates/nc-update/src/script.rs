@@ -49,7 +49,10 @@ pub(crate) fn write_portable_script(path: &Path, spec: &PortableScript<'_>) -> R
     Ok(())
 }
 
-pub(crate) fn spawn_script_with_env(path: &Path, env: &[(&'static str, OsString)]) -> Result<()> {
+pub(crate) fn spawn_script_with_env(
+    path: &Path,
+    env: &[(&'static str, OsString)],
+) -> Result<()> {
     #[cfg(windows)]
     let mut command = {
         let mut command = Command::new("cmd");
@@ -79,10 +82,7 @@ pub(crate) fn portable_script_env(spec: &PortableScript<'_>) -> ScriptEnvironmen
         .map(Path::to_path_buf)
         .unwrap_or_else(|| PathBuf::from("."));
     vec![
-        (
-            "NEXUSCAT_UPDATE_PID",
-            OsString::from(spec.wait_pid.to_string()),
-        ),
+        ("NEXUSCAT_UPDATE_PID", OsString::from(spec.wait_pid.to_string())),
         ("NEXUSCAT_UPDATE_WAIT", env_path(&wait_status)),
         ("NEXUSCAT_UPDATE_SOURCE", env_path(spec.source)),
         ("NEXUSCAT_UPDATE_DEST", env_path(spec.destination)),
@@ -361,3 +361,4 @@ fn shell_quote_path(path: &Path) -> String {
 fn shell_quote_value(value: &str) -> String {
     format!("'{}'", value.replace('\'', "'\\''"))
 }
+

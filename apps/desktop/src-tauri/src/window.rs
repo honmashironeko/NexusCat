@@ -86,19 +86,22 @@ pub fn ensure_stage_window(app: &AppHandle) -> tauri::Result<(WebviewWindow, boo
     if let Some(window) = stage_window(app) {
         return Ok((window, false));
     }
-    let window =
-        tauri::WebviewWindowBuilder::new(app, STAGE_WINDOW, WebviewUrl::App("index.html".into()))
-            .title("NexusCat")
-            .decorations(false)
-            .transparent(false)
-            .shadow(false)
-            .resizable(false)
-            .skip_taskbar(true)
-            .always_on_top(true)
-            .visible(false)
-            .focused(false)
-            .background_color(tauri::window::Color(4, 7, 11, 255))
-            .build()?;
+    let window = tauri::WebviewWindowBuilder::new(
+        app,
+        STAGE_WINDOW,
+        WebviewUrl::App("index.html".into()),
+    )
+    .title("NexusCat")
+    .decorations(false)
+    .transparent(false)
+    .shadow(false)
+    .resizable(false)
+    .skip_taskbar(true)
+    .always_on_top(true)
+    .visible(false)
+    .focused(false)
+    .background_color(tauri::window::Color(4, 7, 11, 255))
+    .build()?;
     Ok((window, true))
 }
 

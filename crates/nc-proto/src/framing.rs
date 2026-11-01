@@ -134,3 +134,4 @@ pub fn peek_frame_len(header: &[u8]) -> Option<usize> {
     }
     Some(HEADER_LEN + u32::from_be_bytes([header[0], header[1], header[2], header[3]]) as usize)
 }
+

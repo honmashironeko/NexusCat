@@ -103,3 +103,4 @@ impl MediaConfig {
         Ok(capacity.saturating_mul(max_fragments))
     }
 }
+

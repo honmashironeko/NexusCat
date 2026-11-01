@@ -474,3 +474,4 @@ pub fn hide_halo(state: &Arc<AppState>) {
         let _ = window.hide();
     }
 }
+

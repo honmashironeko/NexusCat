@@ -359,3 +359,4 @@ fn rects_overlap(first: Rect, second: Rect) -> bool {
         && first.y < second.bottom()
         && second.y < first.bottom()
 }
+

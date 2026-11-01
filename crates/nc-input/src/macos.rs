@@ -723,9 +723,7 @@ fn wheel_lines(delta: i32) -> i32 {
 
 fn natural_scrolling_enabled() -> bool {
     static CACHE: Mutex<Option<(Instant, bool)>> = Mutex::new(None);
-    let mut cache = CACHE
-        .lock()
-        .unwrap_or_else(|poisoned| poisoned.into_inner());
+    let mut cache = CACHE.lock().unwrap_or_else(|poisoned| poisoned.into_inner());
     if let Some((at, value)) = *cache {
         if at.elapsed() < Duration::from_secs(2) {
             return value;
@@ -1050,3 +1048,4 @@ fn post_event(event: *mut c_void) {
         CFRelease(event as *const c_void);
     }
 }
+

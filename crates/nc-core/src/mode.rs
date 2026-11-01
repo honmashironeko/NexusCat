@@ -70,9 +70,7 @@ impl UiState {
 pub enum InputOwner {
     #[default]
     Local,
-    Remote {
-        device_id: DeviceId,
-    },
+    Remote { device_id: DeviceId },
 }
 
 impl InputOwner {
@@ -131,3 +129,4 @@ impl fmt::Display for Direction {
         formatter.write_str(self.as_str())
     }
 }
+

@@ -138,3 +138,4 @@ fn perpendicular_overlaps(
 fn interval_overlap(first_start: f64, first_end: f64, second_start: f64, second_end: f64) -> bool {
     first_end.min(second_end) - first_start.max(second_start) > f64::EPSILON
 }
+

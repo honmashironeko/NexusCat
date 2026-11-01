@@ -338,3 +338,4 @@ pub(crate) fn macos_from_hid(hid: u32) -> Option<u16> {
         .find(|entry| entry.hid == hid)
         .map(|entry| entry.key_code)
 }
+

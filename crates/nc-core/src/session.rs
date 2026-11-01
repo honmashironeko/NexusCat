@@ -97,3 +97,4 @@ impl SessionSnapshot {
         self.state == SessionState::Aggregating && self.stage_visible
     }
 }
+

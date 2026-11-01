@@ -11,26 +11,13 @@ pub enum ControlEvent {
         media_key: [u8; 32],
         purpose: LinkPurpose,
     },
-    PairingSas {
-        peer: DeviceInfo,
-        sas: String,
-    },
-    PairingSucceeded {
-        peer: DeviceInfo,
-    },
-    PairingFailed {
-        reason: String,
-    },
+    PairingSas { peer: DeviceInfo, sas: String },
+    PairingSucceeded { peer: DeviceInfo },
+    PairingFailed { reason: String },
     Message(ControlMessage),
-    Heartbeat {
-        rtt_us: u64,
-    },
-    RemoteClock {
-        offset_us: i64,
-    },
-    Disconnected {
-        reason: String,
-    },
+    Heartbeat { rtt_us: u64 },
+    RemoteClock { offset_us: i64 },
+    Disconnected { reason: String },
 }
 
 impl fmt::Debug for ControlEvent {

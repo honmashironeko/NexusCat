@@ -57,3 +57,4 @@ pub fn decode_probe_request(payload: &[u8]) -> Result<DeviceId, ProbeRequestErro
     device.copy_from_slice(&payload[6..]);
     Ok(DeviceId::from_bytes(device))
 }
+

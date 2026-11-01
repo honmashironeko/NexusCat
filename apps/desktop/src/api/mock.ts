@@ -1,3 +1,4 @@
+
 import { ApiError } from './errors';
 import type {
   AppNotification,
@@ -398,7 +399,7 @@ function buildBootstrap(): Bootstrap {
   return {
     version: '0.1.0',
     platform: 'windows',
-    data_dir: 'C:\NexusCat\data',
+    data_dir: 'C:\\NexusCat\\data',
     settings: store.settings,
     session: store.session,
     devices: store.devices,

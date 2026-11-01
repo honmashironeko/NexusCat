@@ -94,3 +94,4 @@ pub struct DeviceInfo {
     pub control_port: u16,
     pub media_port: u16,
 }
+

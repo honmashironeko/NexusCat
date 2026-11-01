@@ -285,7 +285,8 @@ impl UpdateManager {
                     installer_pid,
                     &launch_path,
                 )?;
-                let env = script::restart_script_env(process::id(), installer_pid, &launch_path);
+                let env =
+                    script::restart_script_env(process::id(), installer_pid, &launch_path);
                 script::spawn_script_with_env(&restart_path, &env)
             });
             if let Err(error) = restart {
@@ -513,3 +514,4 @@ fn package_extension(path: &Path, default: &str) -> String {
         .map(|value| value.to_ascii_lowercase())
         .unwrap_or_else(|| default.to_owned())
 }
+

@@ -539,3 +539,4 @@ fn drain_to_latest<T>(first: T, receiver: &crossbeam_channel::Receiver<T>) -> T 
     }
     latest
 }
+

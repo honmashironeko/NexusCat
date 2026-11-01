@@ -293,3 +293,4 @@ fn wasapi_error(action: &str, error: impl std::fmt::Display) -> NexusError {
 fn chunk_frame_count(sample_rate: u32, frame_ms: u32) -> usize {
     ((u64::from(sample_rate) * u64::from(frame_ms)) / 1_000).max(1) as usize
 }
+

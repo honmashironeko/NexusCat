@@ -262,3 +262,4 @@ fn now_ms() -> u64 {
         .and_then(|duration| u64::try_from(duration.as_millis()).ok())
         .unwrap_or(0)
 }
+

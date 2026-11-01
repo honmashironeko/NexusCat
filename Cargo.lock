@@ -79,12 +79,11 @@ dependencies = [
 
 [[package]]
 name = "apple-metal"
-version = "0.10.2"
+version = "0.10.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c1f02ea704630b0c2fd75483c8894968ea3baaf93466e446e36b37347608759f"
+checksum = "2e5ecd43c9a8443c6ea515108326330313d6390a0383152e6c2db7b776123974"
 dependencies = [
  "doom-fish-utils",
- "libc",
 ]
 
 [[package]]
@@ -3942,9 +3941,9 @@ checksum = "cf54715a573b99ac80df0bc206da022bcd442c974952c7b9720069370852e21f"
 
 [[package]]
 name = "rusty_alloc"
-version = "2.2.6"
+version = "2.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "318c1ca44267aa30e631ed57f8c1db3e25991374bdadc35d97db11b65faba496"
+checksum = "2068dabb25781e513db1e49f5c9848fa7c6cbfa6330880c50f64021a30aa70c8"
 dependencies = [
  "libc",
  "portable-atomic",

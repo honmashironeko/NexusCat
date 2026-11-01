@@ -300,7 +300,18 @@ pub fn run() {
             if !test_mode {
                 use tauri_plugin_autostart::ManagerExt;
                 let _ = app.autolaunch().disable();
-                if let Err(error) = autostart::sync_startup(settings.autostart) {
+                if let Err(error) = autostart::remove_unsafe_task() {
+                    tracing::warn!(%error, "清理不安全的登录自启任务失败");
+                }
+                let autostart_result = if settings.autostart && !autostart::supported() {
+                    tracing::warn!(
+                        "当前程序不在 Program Files，跳过登录自启计划任务；便携版请手动启动"
+                    );
+                    Ok(())
+                } else {
+                    autostart::sync_startup(settings.autostart)
+                };
+                if let Err(error) = autostart_result {
                     tracing::warn!(%error, "同步登录自启计划任务失败");
                     orchestrator::notify_autostart_failed(&state, &error);
                 }

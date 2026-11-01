@@ -14,12 +14,8 @@ pub struct FileTransferId(pub u64);
 pub enum HandshakeMessage {
     Hello(Hello),
     HelloAck(HelloAck),
-    PairSas {
-        sas: String,
-    },
-    PairConfirm {
-        sas: String,
-    },
+    PairSas { sas: String },
+    PairConfirm { sas: String },
     PairResult {
         accepted: bool,
         reason: Option<String>,
@@ -323,3 +319,4 @@ pub fn decode_control(bytes: &[u8]) -> Result<ControlMessage, crate::ProtocolErr
         .deserialize(bytes)
         .map_err(|error| crate::ProtocolError::Deserialize(error.to_string()))
 }
+

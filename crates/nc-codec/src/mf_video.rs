@@ -1389,3 +1389,4 @@ fn ensure_com_initialized() -> Result<()> {
         }
     })
 }
+

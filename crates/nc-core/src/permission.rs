@@ -77,3 +77,4 @@ impl PermissionReport {
             .map(|status| status.granted)
     }
 }
+

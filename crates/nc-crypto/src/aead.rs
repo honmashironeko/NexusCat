@@ -103,3 +103,4 @@ impl ReplayWindow {
         self.max_seq
     }
 }
+

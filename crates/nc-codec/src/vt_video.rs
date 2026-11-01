@@ -356,3 +356,4 @@ fn avcc_contains_keyframe(data: &[u8], nal_length: usize) -> bool {
 fn vt_error(action: &str, error: impl std::fmt::Display) -> NexusError {
     NexusError::Media(format!("VideoToolbox {action}失败：{error}"))
 }
+

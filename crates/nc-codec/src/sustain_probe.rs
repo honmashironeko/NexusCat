@@ -37,10 +37,10 @@ fn windows_probe(
     use windows::Win32::Foundation::HMODULE;
     use windows::Win32::Graphics::Direct3D::{D3D_DRIVER_TYPE_HARDWARE, D3D_FEATURE_LEVEL};
     use windows::Win32::Graphics::Direct3D11::{
-        D3D11CreateDevice, ID3D11Device, ID3D11Texture2D, D3D11_BIND_RENDER_TARGET,
-        D3D11_BIND_SHADER_RESOURCE, D3D11_CREATE_DEVICE_BGRA_SUPPORT,
-        D3D11_CREATE_DEVICE_VIDEO_SUPPORT, D3D11_SDK_VERSION, D3D11_SUBRESOURCE_DATA,
-        D3D11_TEXTURE2D_DESC, D3D11_USAGE_DEFAULT,
+        D3D11CreateDevice, D3D11_BIND_RENDER_TARGET, D3D11_BIND_SHADER_RESOURCE,
+        D3D11_CREATE_DEVICE_BGRA_SUPPORT, D3D11_CREATE_DEVICE_VIDEO_SUPPORT, D3D11_SDK_VERSION,
+        D3D11_SUBRESOURCE_DATA, D3D11_TEXTURE2D_DESC, D3D11_USAGE_DEFAULT, ID3D11Device,
+        ID3D11Texture2D,
     };
     use windows::Win32::Graphics::Dxgi::Common::{DXGI_FORMAT_NV12, DXGI_SAMPLE_DESC};
     use windows::Win32::Graphics::Dxgi::IDXGIAdapter;
@@ -95,11 +95,7 @@ fn windows_probe(
         MiscFlags: 0,
     };
     let mut texture: Option<ID3D11Texture2D> = None;
-    unsafe {
-        device
-            .CreateTexture2D(&desc, Some(&initial), Some(&mut texture))
-            .ok()?
-    };
+    unsafe { device.CreateTexture2D(&desc, Some(&initial), Some(&mut texture)).ok()? };
     let texture = texture?;
 
     let mut encoder = MfH264Encoder::new_with_device(config, preferred_vendor, &device).ok()?;

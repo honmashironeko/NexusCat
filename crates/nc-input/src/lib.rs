@@ -128,3 +128,4 @@ pub(crate) fn unix_timestamp_us() -> u64 {
         .as_micros()
         .min(u128::from(u64::MAX)) as u64
 }
+

@@ -45,3 +45,4 @@ pub fn init_logging(data_dir: &Path, level: &str) -> Result<LogGuard> {
         _worker_guard: worker_guard,
     })
 }
+

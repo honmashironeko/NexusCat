@@ -87,3 +87,4 @@ fn pixels_per_mm(pixels: f64, physical_mm: f64, dpi: f64) -> f64 {
     }
     1.0
 }
+

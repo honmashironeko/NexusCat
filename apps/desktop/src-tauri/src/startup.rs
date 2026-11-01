@@ -4,7 +4,8 @@ use std::path::PathBuf;
 
 #[cfg(windows)]
 const WEBVIEW2_CLIENT_ID: &str = "{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}";
-pub const WEBVIEW2_DOWNLOAD_URL: &str = "https://developer.microsoft.com/microsoft-edge/webview2/";
+pub const WEBVIEW2_DOWNLOAD_URL: &str =
+    "https://developer.microsoft.com/microsoft-edge/webview2/";
 
 pub fn log_path() -> PathBuf {
     let base = std::env::var_os("LOCALAPPDATA")
@@ -188,7 +189,7 @@ fn show_yes_no(title: &str, body: &str) -> bool {
 fn message_box(title: &str, body: &str, yes_no: bool) -> bool {
     use windows::core::PCWSTR;
     use windows::Win32::UI::WindowsAndMessaging::{
-        MessageBoxW, IDYES, MB_ICONERROR, MB_OK, MB_SETFOREGROUND, MB_TOPMOST, MB_YESNO,
+        IDYES, MB_ICONERROR, MB_OK, MB_SETFOREGROUND, MB_TOPMOST, MB_YESNO, MessageBoxW,
     };
 
     let title: Vec<u16> = title.encode_utf16().chain(std::iter::once(0)).collect();
@@ -198,7 +199,14 @@ fn message_box(title: &str, body: &str, yes_no: bool) -> bool {
     } else {
         MB_OK | MB_ICONERROR | MB_SETFOREGROUND | MB_TOPMOST
     };
-    let result = unsafe { MessageBoxW(None, PCWSTR(body.as_ptr()), PCWSTR(title.as_ptr()), style) };
+    let result = unsafe {
+        MessageBoxW(
+            None,
+            PCWSTR(body.as_ptr()),
+            PCWSTR(title.as_ptr()),
+            style,
+        )
+    };
     yes_no && result == IDYES
 }
 
@@ -237,22 +245,13 @@ fn open_url(url: &str) {
 fn webview2_version() -> Option<String> {
     use windows::core::PCWSTR;
     use windows::Win32::System::Registry::{
-        RegGetValueW, HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE, RRF_RT_REG_SZ,
+        HKEY_CURRENT_USER, HKEY_LOCAL_MACHINE, RRF_RT_REG_SZ, RegGetValueW,
     };
 
     let subkeys = [
-        (
-            HKEY_LOCAL_MACHINE,
-            "SOFTWARE\\WOW6432Node\\Microsoft\\EdgeUpdate\\Clients",
-        ),
-        (
-            HKEY_LOCAL_MACHINE,
-            "SOFTWARE\\Microsoft\\EdgeUpdate\\Clients",
-        ),
-        (
-            HKEY_CURRENT_USER,
-            "SOFTWARE\\Microsoft\\EdgeUpdate\\Clients",
-        ),
+        (HKEY_LOCAL_MACHINE, "SOFTWARE\\WOW6432Node\\Microsoft\\EdgeUpdate\\Clients"),
+        (HKEY_LOCAL_MACHINE, "SOFTWARE\\Microsoft\\EdgeUpdate\\Clients"),
+        (HKEY_CURRENT_USER, "SOFTWARE\\Microsoft\\EdgeUpdate\\Clients"),
     ];
     for (root, base) in subkeys {
         let subkey = format!("{base}\\{WEBVIEW2_CLIENT_ID}");
@@ -281,3 +280,4 @@ fn webview2_version() -> Option<String> {
     }
     None
 }
+

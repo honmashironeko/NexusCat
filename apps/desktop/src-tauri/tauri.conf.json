@@ -54,7 +54,7 @@
     "longDescription": "NexusCat 提供多屏流转（软 KVM）与单屏聚合（远程桌面全屏）两种模式的局域网跨设备操作。",
     "windows": {
       "nsis": {
-        "installMode": "currentUser",
+        "installMode": "perMachine",
         "displayLanguageSelector": false,
         "languages": [
           "SimpChinese",

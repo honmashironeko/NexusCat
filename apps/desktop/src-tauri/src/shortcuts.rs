@@ -360,3 +360,4 @@ fn hid_key_code(key: &str) -> Option<u32> {
         }
     }
 }
+

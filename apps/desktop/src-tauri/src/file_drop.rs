@@ -272,7 +272,17 @@ pub fn show(state: &Arc<AppState>, file_count: Option<usize>) {
     let (x, y) = drop_position(work, width as i32, height as i32, margin);
 
     let elevated_drag = broker_required();
-    if elevated_drag && !broker_ready() {
+    let broker_ready = broker_ready();
+    tracing::info!(
+        x,
+        y,
+        width,
+        height,
+        elevated = elevated_drag,
+        broker_ready,
+        "文件拖放浮层定位"
+    );
+    if elevated_drag && !broker_ready {
         hide(state);
         let _ = state
             .events
@@ -299,14 +309,18 @@ pub fn show(state: &Arc<AppState>, file_count: Option<usize>) {
         let _ = window.show();
     }
     #[cfg(windows)]
-    if elevated_drag && !broker::show(x, y, width as i32, height as i32) {
-        hide(state);
-        let _ = state
-            .events
-            .send(AppEvent::FileDropBroker(BrokerEvent::Unavailable {
-                reason: "无法把拖放代理覆盖到文件拖放浮层".into(),
-            }));
-        return;
+    if elevated_drag {
+        let accepted = broker::show(x, y, width as i32, height as i32);
+        tracing::info!(accepted, "拖放代理覆盖请求");
+        if !accepted {
+            hide(state);
+            let _ = state
+                .events
+                .send(AppEvent::FileDropBroker(BrokerEvent::Unavailable {
+                    reason: "无法把拖放代理覆盖到文件拖放浮层".into(),
+                }));
+            return;
+        }
     }
     tracing::info!(?file_count, first_show, "文件拖放浮层已显示");
     schedule_hide_for(state, SAFETY_HIDE_MS, generation);
@@ -376,3 +390,4 @@ fn drop_position(work: nc_platform::RectI, width: i32, height: i32, margin: i32)
     let y = (work.bottom() - height - margin).clamp(work.y, max_y);
     (x, y)
 }
+

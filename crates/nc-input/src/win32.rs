@@ -6,10 +6,14 @@ use std::thread::{self, JoinHandle};
 use std::time::{Duration, Instant};
 
 use crossbeam_channel::{SendTimeoutError, Sender};
-use nc_core::{InputEvent, KeyState, Modifiers, MouseButton, MouseButtonState, NexusError, Result};
+use nc_core::{
+    InputEvent, KeyState, Modifiers, MouseButton, MouseButtonState, NexusError, Result,
+};
 use nc_platform::RectI;
 use windows::core::PCWSTR;
-use windows::Win32::Foundation::{GetLastError, HINSTANCE, HWND, LPARAM, LRESULT, WPARAM};
+use windows::Win32::Foundation::{
+    GetLastError, HINSTANCE, HWND, LPARAM, LRESULT, WPARAM,
+};
 use windows::Win32::System::LibraryLoader::GetModuleHandleW;
 use windows::Win32::System::Threading::GetCurrentThreadId;
 use windows::Win32::UI::Input::KeyboardAndMouse::{
@@ -532,7 +536,7 @@ impl HookRuntime {
             Ok(hwnd) => hwnd,
             Err(error) => {
                 tracing::warn!(%error, "创建 Raw Input 消息窗口失败，相对鼠标采集不可用");
-
+                
                 return;
             }
         };
@@ -547,12 +551,12 @@ impl HookRuntime {
             Ok(()) => {
                 self.raw_window = Some(hwnd);
                 self.relative_mode = true;
-
+                
                 tracing::debug!("Raw Input 相对鼠标采集已开启");
             }
             Err(error) => {
                 tracing::warn!(%error, "注册 Raw Input 鼠标设备失败，相对鼠标采集不可用");
-
+                
                 let _ = unsafe { DestroyWindow(hwnd) };
             }
         }
@@ -1378,3 +1382,4 @@ fn send_inputs(inputs: &[INPUT]) -> Result<()> {
         inputs.len()
     )))
 }
+

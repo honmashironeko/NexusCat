@@ -182,3 +182,4 @@ fn edge_distance(bounds: Rect, direction: Direction, point: Point) -> f64 {
         Direction::Down => (point.y - bounds.bottom()).abs(),
     }
 }
+

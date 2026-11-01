@@ -14,7 +14,9 @@ pub use device::{Capabilities, DeviceInfo, Platform};
 pub use display::{DisplayNode, PhysicalSize, Point, Rect, ScreenOrientation, Size};
 pub use error::{ErrorKind, NexusError, Result};
 pub use ids::{DeviceId, DisplayNodeId, FrameId, SessionId, StreamId};
-pub use input::{InputEnvelope, InputEvent, KeyState, Modifiers, MouseButton, MouseButtonState};
+pub use input::{
+    InputEnvelope, InputEvent, KeyState, Modifiers, MouseButton, MouseButtonState,
+};
 pub use media::{
     AudioCodec, AudioFrame, EncodedAudioFrame, EncodedVideoFrame, PixelFormat, VideoFrame,
 };

@@ -13,14 +13,14 @@ mod worker;
 
 #[cfg(target_os = "macos")]
 use self::macos as platform;
-#[cfg(target_os = "macos")]
-pub use self::macos::disable_pixel_buffer_capture;
 #[cfg(not(any(windows, target_os = "macos")))]
 use self::unsupported as platform;
 #[cfg(windows)]
 use self::windows as platform;
 #[cfg(windows)]
 pub use self::windows::gpu::{disable_gpu_capture, GpuFrame};
+#[cfg(target_os = "macos")]
+pub use self::macos::disable_pixel_buffer_capture;
 
 use crossbeam_channel::Sender;
 use nc_core::{AudioFrame, PixelFormat, Result, VideoFrame};
@@ -120,3 +120,4 @@ pub(crate) fn unix_time_us() -> u64 {
         .map(|duration| u64::try_from(duration.as_micros()).unwrap_or(u64::MAX))
         .unwrap_or(0)
 }
+

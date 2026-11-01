@@ -50,3 +50,4 @@ pub fn spawn(sender: UnboundedSender<DragSignal>) {
     #[cfg(not(any(windows, target_os = "macos")))]
     let _ = sender;
 }
+

@@ -451,3 +451,4 @@ pub(crate) fn contains_keyframe_nal(data: &[u8]) -> bool {
 pub(crate) fn contains_nal_type(data: &[u8], target: u8) -> bool {
     any_nal_type(data, |nal_type| nal_type == target)
 }
+

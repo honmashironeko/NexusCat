@@ -173,16 +173,19 @@ impl MediaReceiver {
             let Some(peer) = self.peer else {
                 continue;
             };
-            let encoded =
-                match MediaPacket::from_nack(self.config.session_id, request.stream_id, &body)
-                    .and_then(|packet| packet.encode(&self.key))
-                {
-                    Ok(encoded) => encoded,
-                    Err(error) => {
-                        debug!(%error, "构造 NACK 失败");
-                        continue;
-                    }
-                };
+            let encoded = match MediaPacket::from_nack(
+                self.config.session_id,
+                request.stream_id,
+                &body,
+            )
+            .and_then(|packet| packet.encode(&self.key))
+            {
+                Ok(encoded) => encoded,
+                Err(error) => {
+                    debug!(%error, "构造 NACK 失败");
+                    continue;
+                }
+            };
             match self.socket.send_to(&encoded, peer).await {
                 Ok(_) => {
                     self.nack_sent = self.nack_sent.saturating_add(1);

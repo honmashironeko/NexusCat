@@ -310,3 +310,4 @@ fn validate_opus_format(sample_rate: u32, channels: u16) -> Result<()> {
     opus_channels(channels)?;
     Ok(())
 }
+

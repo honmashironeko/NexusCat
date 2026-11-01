@@ -109,3 +109,4 @@ pub fn decode_announcement(payload: &[u8]) -> Result<Announcement, AnnouncementE
         .deserialize(payload)
         .map_err(|error| AnnouncementError::Codec(error.to_string()))
 }
+

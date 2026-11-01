@@ -210,3 +210,4 @@ pub fn control_frame(json: &serde_json::Value) -> Vec<u8> {
     buffer.extend_from_slice(&text);
     buffer
 }
+

@@ -85,8 +85,8 @@ impl ScreenCapturer for GdiScreenCapturer {
                             let elapsed = stats_since.elapsed().as_secs_f64();
                             tracing::info!(
                                 fps = stats_frames as f64 / elapsed.max(0.001),
-                                capture_ms =
-                                    stats_capture_us as f64 / 1000.0 / stats_frames.max(1) as f64,
+                                capture_ms = stats_capture_us as f64 / 1000.0
+                                    / stats_frames.max(1) as f64,
                                 "GDI 采集统计"
                             );
                             stats_since = std::time::Instant::now();
@@ -359,3 +359,4 @@ fn delete_icon_bitmap(bitmap: HBITMAP) {
         }
     }
 }
+

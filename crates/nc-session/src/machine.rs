@@ -167,7 +167,9 @@ impl SessionMachine {
                 direction: _,
             } => self.edge_crossed(to_device, to_node, &mut effects),
             SessionEvent::ReturnToLocal => self.return_to_local(&mut effects),
-            SessionEvent::LocalDisplayNodeChanged { node } => self.local_display_node_changed(node),
+            SessionEvent::LocalDisplayNodeChanged { node } => {
+                self.local_display_node_changed(node)
+            }
             SessionEvent::RemoteDisplayNodeChanged { node } => {
                 self.remote_display_node_changed(node)
             }
@@ -886,3 +888,4 @@ impl SessionMachine {
         self.snapshot.input_owner = owner;
     }
 }
+

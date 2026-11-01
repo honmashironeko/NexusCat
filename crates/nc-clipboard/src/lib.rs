@@ -179,3 +179,4 @@ fn read_clipboard() -> Result<Option<ClipboardPayload>, ClipboardError> {
 fn unavailable(error: arboard::Error) -> ClipboardError {
     ClipboardError::Unavailable(error.to_string())
 }
+

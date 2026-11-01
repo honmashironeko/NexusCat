@@ -113,3 +113,4 @@ impl AppNotification {
         matches!(self.severity, Severity::Warning | Severity::Error) || self.action.is_some()
     }
 }
+

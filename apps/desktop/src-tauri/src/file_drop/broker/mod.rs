@@ -17,6 +17,7 @@ pub(crate) fn handle_cli_mode() -> bool {
     let exit_code = match (pipe_name, token) {
         (Some(pipe_name), Some(token)) => {
             let _log_guard = init_logging();
+            install_panic_hook();
             server::run(&pipe_name, &token)
         }
         _ => {
@@ -44,6 +45,12 @@ pub(crate) fn hide() {
 
 pub(crate) fn available() -> bool {
     client::available()
+}
+
+fn install_panic_hook() {
+    std::panic::set_hook(Box::new(|info| {
+        tracing::error!(%info, "文件拖放代理发生 panic");
+    }));
 }
 
 fn init_logging() -> Option<nc_observability::LogGuard> {
