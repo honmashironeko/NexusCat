@@ -52,7 +52,10 @@ jobs:
 
   macos:
     name: macOS arm64
-    runs-on: macos-14
+    runs-on: macos-26
+    env:
+      MACOSX_DEPLOYMENT_TARGET: "13.0"
+      CMAKE_OSX_DEPLOYMENT_TARGET: "13.0"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
