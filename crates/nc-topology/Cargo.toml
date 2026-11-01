@@ -1,0 +1,15 @@
+[package]
+name = "nc-topology"
+description = "显示节点拓扑、邻接、边缘与连续流转"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nc-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+

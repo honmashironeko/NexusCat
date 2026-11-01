@@ -1,0 +1,26 @@
+[package]
+name = "nc-crypto"
+description = "设备身份、密钥交换、SAS 与 AEAD"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nc-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+rustls-pemfile.workspace = true
+thiserror.workspace = true
+rand.workspace = true
+zeroize.workspace = true
+subtle.workspace = true
+sha2.workspace = true
+hkdf.workspace = true
+hmac.workspace = true
+chacha20poly1305.workspace = true
+x25519-dalek.workspace = true
+rustls.workspace = true
+rcgen.workspace = true
+

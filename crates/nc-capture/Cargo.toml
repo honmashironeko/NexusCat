@@ -1,0 +1,26 @@
+[package]
+name = "nc-capture"
+description = "平台屏幕采集抽象与 Windows/macOS 实现"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nc-core.workspace = true
+nc-platform.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+crossbeam-channel.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows.workspace = true
+windows-capture = "2.0.1"
+wasapi.workspace = true
+
+[target.'cfg(windows)'.dev-dependencies]
+nc-codec.workspace = true
+
+[target.'cfg(target_os = "macos")'.dependencies]
+screencapturekit.workspace = true

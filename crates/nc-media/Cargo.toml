@@ -1,0 +1,22 @@
+[package]
+name = "nc-media"
+description = "UDP 媒体分片、重组、NACK/FEC 与抖动缓冲"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nc-core.workspace = true
+serde.workspace = true
+bincode.workspace = true
+tokio.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+rand.workspace = true
+reed-solomon-erasure.workspace = true
+parking_lot.workspace = true
+zeroize.workspace = true
+chacha20poly1305.workspace = true
+

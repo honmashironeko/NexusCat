@@ -1,0 +1,70 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "NexusCat",
+  "version": "0.1.0",
+  "identifier": "app.nexuscat.desktop",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "NexusCat",
+        "width": 420,
+        "height": 322,
+        "minWidth": 420,
+        "minHeight": 322,
+        "center": true,
+        "resizable": true,
+        "visible": false,
+        "decorations": false,
+        "transparent": true,
+        "shadow": false,
+        "skipTaskbar": false,
+        "maximized": false
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self' ipc: http://ipc.localhost; img-src 'self' asset: http://asset.localhost data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self'; connect-src ipc: http://ipc.localhost ws://127.0.0.1:* http://127.0.0.1:*; media-src 'self' blob:; font-src 'self' data:",
+      "devCsp": "default-src 'self' data: blob: http://localhost:1420 ws://localhost:1420 http://127.0.0.1:* ws://127.0.0.1:* ipc: http://ipc.localhost; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src ipc: http://ipc.localhost ws://localhost:1420 http://localhost:1420 ws://127.0.0.1:* http://127.0.0.1:*"
+    }
+  },
+  "plugins": {
+    "macos-fps": {
+      "enabled": true
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "copyright": "Copyright © 2026 NexusCat contributors",
+    "category": "Utility",
+    "shortDescription": "Windows ↔ macOS 跨设备操作",
+    "longDescription": "NexusCat 提供多屏流转（软 KVM）与单屏聚合（远程桌面全屏）两种模式的局域网跨设备操作。",
+    "windows": {
+      "nsis": {
+        "installMode": "currentUser",
+        "displayLanguageSelector": false,
+        "languages": [
+          "SimpChinese",
+          "English"
+        ]
+      }
+    },
+    "macOS": {
+      "minimumSystemVersion": "13.0",
+      "infoPlist": "Info.plist"
+    }
+  }
+}

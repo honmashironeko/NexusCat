@@ -1,0 +1,15 @@
+[package]
+name = "nc-session"
+description = "会话/显示节点状态机与模式切换"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nc-topology.workspace = true
+nc-core.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true

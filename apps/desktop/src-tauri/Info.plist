@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSScreenCaptureUsageDescription</key>
+    <string>NexusCat 需要屏幕录制权限来采集画面并把画面流转到其他设备。</string>
+    <key>NSInputMonitoringUsageDescription</key>
+    <string>NexusCat 需要输入监控权限来捕获键盘与鼠标事件，以便在光标到达屏幕边缘时切换到其他设备。</string>
+    <key>NSLocalNetworkUsageDescription</key>
+    <string>NexusCat 需要访问本地网络来发现并连接同一局域网内的其他设备。</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+</dict>
+</plist>

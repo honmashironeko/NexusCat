@@ -1,0 +1,18 @@
+[package]
+name = "nc-input"
+description = "输入捕获、转发、注入与热键逃逸"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nc-core.workspace = true
+nc-platform.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+crossbeam-channel.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows = { workspace = true, features = ["Win32_UI_Input"] }

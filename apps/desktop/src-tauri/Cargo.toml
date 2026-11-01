@@ -1,0 +1,69 @@
+[package]
+name = "nc-desktop"
+description = "NexusCat 桌面应用（Tauri 后端）"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[lib]
+name = "nc_desktop_lib"
+path = "src/lib.rs"
+
+[[bin]]
+name = "nexuscat"
+path = "src/main.rs"
+test = false
+
+[build-dependencies]
+tauri-build.workspace = true
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
+
+[dependencies]
+nc-core.workspace = true
+nc-proto.workspace = true
+nc-crypto.workspace = true
+nc-discovery.workspace = true
+nc-control.workspace = true
+nc-topology.workspace = true
+nc-session.workspace = true
+nc-media.workspace = true
+nc-platform.workspace = true
+nc-capture.workspace = true
+nc-codec.workspace = true
+nc-input.workspace = true
+nc-clipboard.workspace = true
+nc-files.workspace = true
+nc-update.workspace = true
+nc-observability.workspace = true
+
+tauri = { workspace = true, features = ["tray-icon", "image-png"] }
+tauri-plugin-single-instance.workspace = true
+tauri-plugin-autostart.workspace = true
+tauri-plugin-notification.workspace = true
+tauri-plugin-dialog.workspace = true
+tauri-plugin-global-shortcut.workspace = true
+tauri-plugin-opener.workspace = true
+
+serde.workspace = true
+serde_json.workspace = true
+tokio = { workspace = true, features = ["fs"] }
+tokio-tungstenite.workspace = true
+futures-util.workspace = true
+tracing.workspace = true
+directories.workspace = true
+rand.workspace = true
+semver.workspace = true
+parking_lot.workspace = true
+crossbeam-channel.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows.workspace = true
+windows-core.workspace = true
+
+[target.'cfg(target_os = "macos")'.dependencies]
+tauri-plugin-macos-fps = "0.1"
+

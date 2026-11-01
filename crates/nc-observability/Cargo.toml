@@ -1,0 +1,20 @@
+[package]
+name = "nc-observability"
+description = "延迟分解、帧率、丢包、预加载与日志"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nc-core.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+tracing-appender.workspace = true
+parking_lot.workspace = true
+directories.workspace = true
+

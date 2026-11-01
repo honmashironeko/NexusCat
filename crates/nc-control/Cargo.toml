@@ -1,0 +1,25 @@
+[package]
+name = "nc-control"
+description = "TLS 控制通道、帧加密与消息路由"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nc-core.workspace = true
+nc-proto.workspace = true
+nc-crypto.workspace = true
+serde.workspace = true
+bincode.workspace = true
+tokio.workspace = true
+tokio-rustls.workspace = true
+rustls.workspace = true
+rustls-pemfile.workspace = true
+rcgen.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+rand.workspace = true
+sha2.workspace = true
+

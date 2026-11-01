@@ -1,0 +1,19 @@
+[package]
+name = "nc-files"
+description = "文件分块传输、校验与接收落盘"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nc-core.workspace = true
+nc-proto.workspace = true
+serde.workspace = true
+sha2.workspace = true
+tokio.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+directories.workspace = true
+

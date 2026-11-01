@@ -1,0 +1,13 @@
+[package]
+name = "nc-core"
+description = "NexusCat 跨 crate 领域类型、输入事件、媒体帧与错误模型"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+serde.workspace = true
+thiserror.workspace = true
+

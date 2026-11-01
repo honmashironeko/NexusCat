@@ -1,0 +1,20 @@
+[package]
+name = "nc-discovery"
+description = "LAN 设备发现与在线状态"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nc-core.workspace = true
+nc-proto.workspace = true
+serde.workspace = true
+bincode.workspace = true
+tokio.workspace = true
+tracing.workspace = true
+socket2.workspace = true
+if-addrs.workspace = true
+thiserror.workspace = true
+

@@ -1,0 +1,19 @@
+[package]
+name = "nc-clipboard"
+description = "剪贴板监听与文本/图片同步"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nc-core.workspace = true
+arboard.workspace = true
+sha2.workspace = true
+image.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+parking_lot.workspace = true
+

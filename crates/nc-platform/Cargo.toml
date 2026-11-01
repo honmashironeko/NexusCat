@@ -1,0 +1,28 @@
+[package]
+name = "nc-platform"
+description = "平台能力探测：显示器、权限、安全桌面、光标"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nc-core.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+windows = { workspace = true, features = [
+    "Win32_Graphics_Dxgi",
+    "Win32_Graphics_Dxgi_Common",
+    "Win32_Media_Multimedia",
+    "Win32_System_Registry",
+    "Win32_System_StationsAndDesktops",
+    "Win32_System_WindowsProgramming",
+    "Win32_UI_HiDpi",
+] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+screencapturekit.workspace = true

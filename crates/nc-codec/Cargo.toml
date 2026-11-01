@@ -1,0 +1,34 @@
+[package]
+name = "nc-codec"
+description = "H.264 编解码抽象与 Windows Media Foundation/rusty_h264 后端、音频编码"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+
+[dependencies]
+nc-core.workspace = true
+rusty_h264.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+
+[target.'cfg(windows)'.dependencies]
+openh264 = "0.9.9"
+windows = { workspace = true, features = [
+    "Win32_Foundation",
+    "Win32_Graphics_Direct3D",
+    "Win32_Graphics_Direct3D11",
+    "Win32_Graphics_Dxgi",
+    "Win32_Graphics_Dxgi_Common",
+    "Win32_Media_MediaFoundation",
+    "Win32_System_Ole",
+] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+apple-cf.workspace = true
+videotoolbox.workspace = true
+
+[target.'cfg(any(windows, target_os = "macos"))'.dependencies]
+opus.workspace = true
+

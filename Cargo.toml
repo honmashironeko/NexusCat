@@ -1,0 +1,135 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/nc-core",
+    "crates/nc-proto",
+    "crates/nc-crypto",
+    "crates/nc-discovery",
+    "crates/nc-control",
+    "crates/nc-topology",
+    "crates/nc-session",
+    "crates/nc-media",
+    "crates/nc-platform",
+    "crates/nc-capture",
+    "crates/nc-codec",
+    "crates/nc-input",
+    "crates/nc-clipboard",
+    "crates/nc-files",
+    "crates/nc-update",
+    "crates/nc-observability",
+    "apps/desktop/src-tauri",
+]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.85"
+license = "Apache-2.0"
+authors = ["NexusCat contributors"]
+
+[workspace.dependencies]
+nc-core = { path = "crates/nc-core" }
+nc-proto = { path = "crates/nc-proto" }
+nc-crypto = { path = "crates/nc-crypto" }
+nc-discovery = { path = "crates/nc-discovery" }
+nc-control = { path = "crates/nc-control" }
+nc-topology = { path = "crates/nc-topology" }
+nc-session = { path = "crates/nc-session" }
+nc-media = { path = "crates/nc-media" }
+nc-platform = { path = "crates/nc-platform" }
+nc-capture = { path = "crates/nc-capture" }
+nc-codec = { path = "crates/nc-codec" }
+nc-input = { path = "crates/nc-input" }
+nc-clipboard = { path = "crates/nc-clipboard" }
+nc-files = { path = "crates/nc-files" }
+nc-update = { path = "crates/nc-update" }
+nc-observability = { path = "crates/nc-observability" }
+
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+bincode = "1.3"
+thiserror = "2.0"
+anyhow = "1.0"
+tokio = { version = "1.44", features = ["rt", "rt-multi-thread", "macros", "net", "sync", "time", "io-util", "fs"] }
+tokio-util = { version = "0.7", features = ["codec"] }
+futures-util = "0.3"
+parking_lot = "0.12"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tracing-appender = "0.2"
+rand = "0.8"
+zeroize = { version = "1.8", features = ["derive"] }
+subtle = "2.6"
+sha2 = "0.10"
+hkdf = "0.12"
+hmac = "0.12"
+chacha20poly1305 = "0.10"
+x25519-dalek = { version = "2.0", features = ["static_secrets"] }
+rustls = { version = "0.23", default-features = false, features = ["ring", "std", "logging"] }
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "logging"] }
+rustls-pemfile = "2.2"
+rcgen = { version = "0.13", default-features = false, features = ["pem", "ring"] }
+socket2 = { version = "0.5", features = ["all"] }
+if-addrs = "0.13"
+directories = "6.0"
+arboard = "3.7"
+image = { version = "0.25", default-features = false, features = ["png"] }
+rusty_h264 = "0.16"
+videotoolbox = "0.21"
+screencapturekit = { version = "11.1", features = ["macos_14_0"] }
+apple-cf = { version = "0.11", default-features = false, features = ["cm", "iosurface", "cv"] }
+reed-solomon-erasure = "6.0"
+semver = { version = "1", features = ["serde"] }
+crossbeam-channel = "0.5"
+tempfile = "3.20"
+tokio-tungstenite = "0.28"
+tauri = { version = "2.12", features = [] }
+tauri-build = { version = "2.5", features = [] }
+tauri-plugin-single-instance = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-notification = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-opener = "2"
+
+windows-core = "0.62"
+windows = { version = "0.62", features = [
+    "Win32_Foundation",
+    "Win32_Graphics_Gdi",
+    "Win32_Graphics_Direct3D10",
+    "Win32_Graphics_Direct3D11",
+    "Win32_Graphics_Dxgi",
+    "Win32_Graphics_Dxgi_Common",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_UI_Shell",
+    "Win32_System_Registry",
+    "Win32_UI_Input_KeyboardAndMouse",
+    "Win32_UI_HiDpi",
+    "Win32_UI_Accessibility",
+    "Win32_System_Threading",
+    "Win32_System_Pipes",
+    "Win32_System_RemoteDesktop",
+    "Win32_System_Services",
+    "Win32_System_StationsAndDesktops",
+    "Win32_Storage_FileSystem",
+    "Win32_Security_Authorization",
+    "Win32_System_LibraryLoader",
+    "Win32_System_Com",
+    "Win32_System_Com_StructuredStorage",
+    "Win32_System_Ole",
+    "Win32_System_SystemServices",
+    "Win32_System_Diagnostics_ToolHelp",
+    "Win32_System_Variant",
+    "Win32_Security",
+    "Win32_Media_Multimedia",
+] }
+wasapi = "0.26"
+opus = "0.4"
+
+[profile.release]
+lto = "thin"
+codegen-units = 4
+panic = "abort"
+
+[profile.dev.package."*"]
+opt-level = 1
